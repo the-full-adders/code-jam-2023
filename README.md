@@ -27,3 +27,4 @@ This repo is home to our project made for python discord code jam 10.
 # Team members
 <!---Todo: add names of all team members --->
 - [gala_vs](https://github.com/p0lygun)
+- [anaspy](https://github.com/Anas-bot)
