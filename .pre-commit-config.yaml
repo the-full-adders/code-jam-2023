@@ -3,6 +3,7 @@
 
 # Make sure to edit the `additional_dependencies` list if you want to add plugins
 
+default_install_hook_types: [pre-commit, commit-msg]
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v2.5.0
@@ -29,3 +30,8 @@ repos:
       - id: flake8
         additional_dependencies:
           - flake8-docstrings~=1.6.0
+
+  - repo: https://github.com/p0lygun/commit-msg-validator
+    rev: v1.4.0
+    hooks:
+      - id: check-commit-msg
