@@ -2,7 +2,13 @@
 name = "code-jam-2023"
 version = "0.1.0"
 description = "project made for python discord code jam 10"
-authors = ["p0lygun <solankivibhakar82@gmail.com>"]
+authors = [
+    "p0lygun <solankivibhakar82@gmail.com>",
+    "Hamza-Farrukh <hamzafarrukh73@gmail.com>",
+    "Anas-bot <anasihabezmc@gmail.com>",
+    "Kaezrr",
+    "rudravashishtha"
+]
 license = "MIT"
 readme = "README.md"
 packages = [{include = "code_jam_2023"}]
