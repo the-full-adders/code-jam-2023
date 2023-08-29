@@ -1,23 +1,27 @@
 [tool.poetry]
-name = "Name"
+name = "code-jam-2023"
 version = "0.1.0"
-description = ""
-authors = ["Author 1 <email@mail.com>"]
+description = "project made for python discord code jam 10"
+authors = [
+    "p0lygun <solankivibhakar82@gmail.com>",
+    "Hamza-Farrukh <hamzafarrukh73@gmail.com>",
+    "Anas-bot <anasihabezmc@gmail.com>",
+    "Kaezrr",
+    "rudravashishtha"
+]
 license = "MIT"
+readme = "README.md"
+packages = [{include = "code_jam_2023"}]
 
 [tool.poetry.dependencies]
-python = "3.11.*"
+python = "^3.11"
 
-[tool.poetry.dev-dependencies]
-# Base tools
-flake8 = "~4.0.1"
-isort = "~5.12.0"
-pre-commit = "~2.17.0"
-
-# Flake8 plugins, see https://github.com/python-discord/code-jam-template/tree/main#plugin-list
-flake8-docstrings = "~1.6.0"
-
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^3.3.3"
+flake8 = "^6.1.0"
+isort = "^5.12.0"
+flake8-docstrings = "^1.7.0"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
