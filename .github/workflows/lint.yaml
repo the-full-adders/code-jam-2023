@@ -22,11 +22,15 @@ jobs:
       PYTHON_VERSION: "3.11"
 
     steps:
+      - name: Info dump
+        run: |
+          echo ${{ github.event_name }}
+
       # Checks out the repository in the current folder.
       - name: Checks out repository
         uses: actions/checkout@v3
         with:
-          ref: ${{ env.GITHUB_SHA }}  # need history for commit-msg hook
+          fetch-depth: 2
 
       # Set up the right version of Python
       - name: Set up Python ${{ env.PYTHON_VERSION }}
@@ -37,9 +41,14 @@ jobs:
       - name: Run pre-commit hooks
         uses: pre-commit/action@v3.0.0
 
-      - name: Get Head Commit Message
-        id: get_head_commit_message
-        run: echo "$(git show -s --format=%s)" >> /tmp/msg
+      - name: Get commit message
+        id: get_commit_message
+        run: |
+          if   [[ '${{ github.event_name }}' == 'push' ]]; then
+            echo $(git log --format=%B -n 1 HEAD) >> /tmp/msg
+          elif [[ '${{ github.event_name }}' == 'pull_request' ]]; then
+            echo $(git log --format=%B -n 1 HEAD^2) >> /tmp/msg
+          fi
 
       - name: Check for Valid commit message
         run: |
