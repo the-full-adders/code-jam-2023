@@ -19,7 +19,7 @@ jobs:
 
     env:
       # The Python version your project uses. Feel free to change this if required.
-      PYTHON_VERSION: "3.10"
+      PYTHON_VERSION: "3.11"
 
     steps:
       # Checks out the repository in the current folder.
@@ -34,3 +34,15 @@ jobs:
 
       - name: Run pre-commit hooks
         uses: pre-commit/action@v3.0.0
+
+      - name: Get commit message
+        id: get_commit_message
+        run: |
+          if   [[ '${{ github.event_name }}' == 'push' ]]; then
+            echo $(git log --format=%B -n 1 HEAD) >> /tmp/msg
+          elif [[ '${{ github.event_name }}' == 'pull_request' ]]; then
+            echo $(git log --format=%B -n 1 HEAD^2) >> /tmp/msg
+
+      - name: Check for Valid commit message
+        run: |
+          pre-commit run --hook-stage commit-msg --commit-msg-filename /tmp/msg check-commit-msg
