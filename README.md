@@ -14,7 +14,7 @@ This repo is home to our project made for python discord code jam 10.
 - activate the environment
 - install pre-commit hooks
     - ```
-        pre-commit --install-hooks
+        pre-commit install
         ```
 - Get to contributing 🙂
 - when contributing make sure to
