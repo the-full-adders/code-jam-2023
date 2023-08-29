@@ -25,6 +25,8 @@ jobs:
       # Checks out the repository in the current folder.
       - name: Checks out repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 2  # need history for commit-msg hook
 
       # Set up the right version of Python
       - name: Set up Python ${{ env.PYTHON_VERSION }}
