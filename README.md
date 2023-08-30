@@ -30,3 +30,4 @@ This repo is home to our project made for python discord code jam 10.
 - [rudravashishtha](https://github.com/rudravashishtha)
 - [hamza-farrukh](https://github.com/hamza-farrukh)
 - [kaezr](https://github.com/kaezrr)
+- [anaspy](https://github.com/Anas-bot)
