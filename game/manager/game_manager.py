@@ -2,6 +2,10 @@ import os
 import sys
 
 import pygame as pg
+import pygame_gui as pgui
+
+from .. import config as CONFIG
+from ..ui.manager import UIManager
 
 
 class GameManager:
@@ -10,25 +14,35 @@ class GameManager:
     def __init__(self):
         """Initialize the game manager."""
         pg.init()
-        flags = pg.OPENGL | pg.DOUBLEBUF | pg.RESIZABLE | pg.SCALED | pg.SHOWN
-        self.size = (800, 600)
-        self.screen = pg.display.set_mode(self.size, flags=flags, vsync=1)
-        pg.display.set_caption("Game")
+        flags = pg.SCALED | pg.SHOWN | pg.RESIZABLE
+        self.width, self.height = 800, 600
+        self.screen = pg.display.set_mode([self.width, self.height], flags=flags, vsync=1)
+        self.font = pg.font.Font(
+            str(CONFIG.PROJECT_DIR / 'assets' / 'fonts' / 'QuinqueFive.woff'),
+            20
+        )
         self.clock = pg.time.Clock()
+        self.ui_manager = None
+        self.timedelta = 0
+        pg.display.set_caption("cj-10-game")
         self.running = True
 
     def new_game(self):
         """Start a new game."""
+        self.ui_manager = UIManager(self)
         pass
 
     def update(self):
         """Update the game."""
         pg.display.flip()
-        self.clock.tick(60)
+        self.timedelta = self.clock.tick(60) / 1000.0
+        self.ui_manager.update(self.timedelta)
 
     def draw(self):
         """Draw the game."""
-        pass
+        self.screen.fill([0, 0, 0])
+        self.ui_manager.draw_ui(self.screen)
+        pg.display.update()
 
     def check_events(self):
         """Check for events."""
@@ -38,8 +52,14 @@ class GameManager:
             elif os.getenv('DEBUG').lower() == 'true' and (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
                 self.quit_game()
 
+            if event.type == pgui.UI_BUTTON_PRESSED:
+                print('Hello World!')
+
+            self.ui_manager.process_events(event)
+
     def run(self):
         """Run the game."""
+        self.new_game()
         while self.running:
             self.check_events()
             self.update()
