@@ -11,16 +11,22 @@ authors = [
 ]
 license = "MIT"
 readme = "README.md"
-packages = [{include = "code_jam_2023"}]
+packages = [{include = "game"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
+pygame = "^2.5.1"
+numpy = "^1.25.2"
+python-dotenv = "^1.0.0"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.3.3"
 flake8 = "^6.1.0"
 isort = "^5.12.0"
 flake8-docstrings = "^1.7.0"
+
+[tool.poetry.scripts]
+game = "game.__main__:run_game"
 
 [build-system]
 requires = ["poetry-core"]
