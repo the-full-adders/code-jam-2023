@@ -33,8 +33,21 @@ class UIManager(PygameUIManager):
             manager=self,
             anchors={'center': 'center'},
             margins={'left': 0, 'right': 0, 'top': 10, 'bottom': 10},
-            visible=True
+            visible=True,
+            object_id="main_menu_container"
         )
         main_menu_container.border_width = 0
         self.main_menu = MainMenu(main_menu_container, self)
         print("Main menu set up!")
+
+    def process_button_pressed(self, event):
+        """Process a button press."""
+        if self.active_screen == "main_menu":
+            match event.ui_object_id.split(".")[-1]:
+                case "start_game_button":
+                    print('Start Game button pressed')
+                case "options_button":
+                    print('Options button pressed')
+                case "quit_button":
+                    print('Quit button pressed')
+                    self.gm.quit_game()
