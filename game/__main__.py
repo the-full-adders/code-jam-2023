@@ -1,6 +1,10 @@
 if True:
+    import os
+
     from dotenv import load_dotenv
     load_dotenv()
+    os.environ['SDL_VIDEO_X11_WMCLASS'] = 'cj-10-game'
+
 
 from .manager.game_manager import GameManager
 
