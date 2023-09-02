@@ -4,7 +4,7 @@ import sys
 import pygame as pg
 import pygame_gui as pgui
 
-from .. import config as CONFIG
+from .. import config as config
 from ..ui.manager import UIManager
 
 
@@ -18,11 +18,11 @@ class GameManager:
         self.width, self.height = 800, 600
         self.screen = pg.display.set_mode([self.width, self.height], flags=flags, vsync=1)
         self.font = pg.font.Font(
-            str(CONFIG.PROJECT_DIR / 'assets' / 'fonts' / 'QuinqueFive.woff'),
+            str(config.PROJECT_DIR / 'assets' / 'fonts' / 'QuinqueFive.woff'),
             20
         )
         self.clock = pg.time.Clock()
-        self.ui_manager = None
+        self.ui_manager: UIManager = None
         self.timedelta = 0
         pg.display.set_caption("cj-10-game")
         self.running = True
@@ -30,7 +30,6 @@ class GameManager:
     def new_game(self):
         """Start a new game."""
         self.ui_manager = UIManager(self)
-        pass
 
     def update(self):
         """Update the game."""
@@ -53,7 +52,14 @@ class GameManager:
                 self.quit_game()
 
             if event.type == pgui.UI_BUTTON_PRESSED:
-                print('Hello World!')
+                if self.ui_manager.active_screen == "main_menu":
+                    if event.ui_element == self.ui_manager.main_menu.buttons['Start Game']:
+                        print('Start Game button pressed')
+                    elif event.ui_element == self.ui_manager.main_menu.buttons['Options']:
+                        print('Options button pressed')
+                    elif event.ui_element == self.ui_manager.main_menu.buttons['Quit']:
+                        print('Quit button pressed')
+                        self.quit_game()
 
             self.ui_manager.process_events(event)
 
