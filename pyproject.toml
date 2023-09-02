@@ -15,9 +15,9 @@ packages = [{include = "game"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
-pygame = "^2.5.1"
 numpy = "^1.25.2"
 python-dotenv = "^1.0.0"
+pygame-ce = "^2.3.1"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.3.3"
