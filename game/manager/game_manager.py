@@ -22,14 +22,14 @@ class GameManager:
             20
         )
         self.clock = pg.time.Clock()
-        self.ui_manager: UIManager = None
+        self.ui_manager: UIManager = UIManager(self)
         self.timedelta = 0
         pg.display.set_caption("cj-10-game")
         self.running = True
 
     def new_game(self):
         """Start a new game."""
-        self.ui_manager = UIManager(self)
+        pass
 
     def update(self):
         """Update the game."""
@@ -46,22 +46,15 @@ class GameManager:
     def check_events(self):
         """Check for events."""
         for event in pg.event.get():
+            self.ui_manager.process_events(event)
+
             if event.type == pg.QUIT:
                 self.quit_game()
             elif os.getenv('DEBUG').lower() == 'true' and (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
                 self.quit_game()
 
             if event.type == pgui.UI_BUTTON_PRESSED:
-                if self.ui_manager.active_screen == "main_menu":
-                    if event.ui_element == self.ui_manager.main_menu.buttons['Start Game']:
-                        print('Start Game button pressed')
-                    elif event.ui_element == self.ui_manager.main_menu.buttons['Options']:
-                        print('Options button pressed')
-                    elif event.ui_element == self.ui_manager.main_menu.buttons['Quit']:
-                        print('Quit button pressed')
-                        self.quit_game()
-
-            self.ui_manager.process_events(event)
+                self.ui_manager.process_button_pressed(event)
 
     def run(self):
         """Run the game."""

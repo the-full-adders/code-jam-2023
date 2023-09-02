@@ -33,5 +33,6 @@ class MainMenu:
                 'manager': manager,
                 'container': container,
                 'anchors': {'centerx': 'centerx'},
+                'object_id': f'{button_text.lower().replace(" ", "_")}_button'
             }
             self.buttons[button_text] = pygame_gui.elements.UIButton(**button_options)
