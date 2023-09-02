@@ -4,7 +4,7 @@ import pygame
 import pygame_gui
 from pygame_gui import UIManager as PygameUIManager
 
-from .. import config as CONFIG
+from .. import config as config
 from .main_menu import MainMenu
 
 if TYPE_CHECKING:
@@ -17,9 +17,10 @@ class UIManager(PygameUIManager):
     def __init__(self, gm: 'GameManager', *args, **kwargs):
         """Initialize the UI manager."""
         self.gm = gm
-        super().__init__((gm.width, gm.height), str(CONFIG.PROJECT_DIR / "ui" / "theme.json"), *args, **kwargs)
+        super().__init__((gm.width, gm.height), str(config.PROJECT_DIR / "ui" / "theme.json"), *args, **kwargs)
+        self.main_menu: MainMenu | None = None
+        self.active_screen = "main_menu"
         self.ui_setup()
-        self.active_menu = None
 
     def ui_setup(self):
         """Set up the UI manager."""
@@ -35,5 +36,5 @@ class UIManager(PygameUIManager):
             visible=True
         )
         main_menu_container.border_width = 0
-        MainMenu(main_menu_container, self)
-        self.active_menu = main_menu_container
+        self.main_menu = MainMenu(main_menu_container, self)
+        print("Main menu set up!")
