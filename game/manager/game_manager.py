@@ -15,7 +15,7 @@ class GameManager:
         """Initialize the game manager."""
         pg.init()
         flags = pg.SCALED | pg.SHOWN | pg.RESIZABLE
-        self.width, self.height = 800, 600
+        self.width, self.height = config.ROOT_SVG['width'], config.ROOT_SVG['height']
         self.screen = pg.display.set_mode([self.width, self.height], flags=flags, vsync=1)
         self.font = pg.font.Font(
             str(config.PROJECT_DIR / 'assets' / 'fonts' / 'QuinqueFive.woff'),
