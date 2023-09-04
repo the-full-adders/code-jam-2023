@@ -43,7 +43,8 @@ class MainMenu:
         match event.ui_object_id.split(".")[-1]:
             case "start_game_button":
                 print('Start Game button pressed')
-                # todo: start game
+                self.manager.gm.new_game()
+                self.manager.active_screen = "game"
             case "options_button":
                 print('Options button pressed')
                 # todo: show options menu

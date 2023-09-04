@@ -5,6 +5,7 @@ import pygame as pg
 import pygame_gui as pgui
 
 from .. import config as config
+from ..screens.game.world_map import WorldMap
 from ..ui.manager import UIManager
 
 
@@ -25,11 +26,13 @@ class GameManager:
         self.ui_manager: UIManager = UIManager(self)
         self.timedelta = 0
         pg.display.set_caption("cj-10-game")
+        self.world_map: WorldMap | None = None
         self.running = True
 
     def new_game(self):
         """Start a new game."""
-        pass
+        self.world_map = WorldMap(self, config.COLORS['bg'], visible=True, debug=False)
+        self.ui_manager.setup_game_screen()
 
     def update(self):
         """Update the game."""
@@ -39,8 +42,10 @@ class GameManager:
 
     def draw(self):
         """Draw the game."""
-        self.screen.fill([0, 0, 0])
+        self.screen.fill(config.COLORS['bg'])
         self.ui_manager.draw_ui(self.screen)
+        if self.ui_manager.active_screen == 'game':
+            self.world_map.draw()
         pg.display.update()
 
     def check_events(self):
@@ -58,7 +63,6 @@ class GameManager:
 
     def run(self):
         """Run the game."""
-        self.new_game()
         while self.running:
             self.check_events()
             self.update()
