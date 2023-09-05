@@ -54,6 +54,7 @@ class WorldMap:
         self._debug = debug
         self._map_drawn = False
         self.visible = visible
+        self.map_changed = True
 
     @property
     def visible(self):
@@ -99,19 +100,26 @@ class WorldMap:
 
     def blit_world_map(self):
         """Blit the world map on screen."""
-        self.world_surface.fill(self.background_color)
-        sprite: Country
-        for sprite in self.countries:
-            sprite.draw_country_border(self.world_surface)
-        self.countries.draw(self.world_surface)  # todo: add a way to draw debug rects
-        surface_draw_size = [
-            dimension * self.scale
-            for dimension in self.world_surface.get_size()
-        ]
-        pygame.transform.scale(
-            self.world_surface,
-            surface_draw_size,
-        )
+        if self.map_changed:
+            # do the calculations only once, then scale the surface.
+            self.world_surface.fill(self.background_color)
+            sprite: Country
+            for sprite in self.countries:
+                sprite.draw_country_border(self.world_surface)
+            self.countries.draw(self.world_surface)
+            # todo: add a way to draw debug rects
+            # todo: modify this as such that all draw are handled by the countries sprites, and not here.
+
+            surface_draw_size = [
+                dimension * self.scale
+                for dimension in self.world_surface.get_size()
+            ]
+            self.world_surface = pygame.transform.scale(
+                self.world_surface,
+                surface_draw_size,
+            )
+            self.map_changed = False
+
         self.gm.screen.blit(
             self.world_surface,
             self.world_surface.get_rect(
@@ -136,5 +144,5 @@ class WorldMap:
                 country := pygame.sprite.spritecollideany(self.gm.cursor, self.countries, pygame.sprite.collide_mask)):
             # only do mask collision if rect collision is true
             draw_text(
-                country.name, self.gm.font, self.gm.screen
+                f"{country.name} - {country.cid}", self.gm.font, self.gm.screen
             )

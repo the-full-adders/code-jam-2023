@@ -22,7 +22,10 @@ class Country(Sprite):
         self.image = pygame.image.load(str(country_svg)).convert_alpha()
         self.rect = self.image.get_rect()
         self.rect.topleft = [x-2, y+2]  # compensate for the border
-        self.image = pygame.transform.scale(self.image, size)
+
+        self.fitting_scale = 0.98
+        self.image = pygame.transform.scale(self.image, [dimension * self.fitting_scale for dimension in size])
+
         self.mask = pygame.mask.from_surface(self.image)
         self.mask_surface: pygame.Surface | None = None
 
@@ -37,6 +40,7 @@ class Country(Sprite):
         """Draw the border of the country."""
         if border_color:
             self.border_color = border_color
+
         self.mask_surface = self.mask.to_surface()
         self.mask_surface.set_colorkey(self.border_color)
         dx, dy = [1, -1, 0, 0], [0, 0, 1, -1]
