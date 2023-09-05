@@ -15,10 +15,12 @@ except ImportError:
     print("Install deps in the 'extra' group to use this script")
     raise
 
-with open('color_mapping.json') as f:
+assets_dir = Path(__file__).parent.parent / "assets" / "world_map"
+
+with open(assets_dir / 'color_mapping.json') as f:
     color_mapping = json.load(f)
 
-with open('country_coords.json') as f:
+with open(assets_dir / 'country_coordinates.json') as f:
     country_coords = json.load(f)
 
 
@@ -39,7 +41,8 @@ def clean_asset():
     """Remove all non-essential characters from the asset name"""
     # In this function we use lxml to set correct viewbox and size attributes for each country
     # ( for reference see game/assets/country_coords.json ).
-    svgs = Path(__file__).parent.glob("assets/*.svg")
+    svgs = assets_dir / "countries_svgs"
+    svgs = svgs.glob("*.svg")
     for svg_file in svgs:
         country_id = svg_file.stem
         xml = etree.parse(svg_file)
@@ -53,6 +56,7 @@ def clean_asset():
         svg.attrib['height'] = str(country_coords[country_id]['height'])
         svg.attrib['width'] = str(country_coords[country_id]['width'])
         svg.attrib['viewBox'] = " ".join([str(_) for _ in view_box])
+        svg.attrib['fill'] = "#00394f"
         with open(svg_file, 'wb') as f:
             f.write(etree.tostring(xml, pretty_print=True))
 

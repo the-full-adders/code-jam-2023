@@ -1,12 +1,34 @@
 import json
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 
 import pygame
 
 from ... import config
+from ...utils.debug import draw_text
+from .countries import Country
 
 if TYPE_CHECKING:
     from ...manager.game_manager import GameManager
+
+
+class Cursor(pygame.sprite.Sprite):
+    """Class that represents the cursor that is used in the game.
+
+    # todo: Maybe this should be moved to the game manager class.
+    """
+
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.Surface([10, 10])
+        self.rect = self.image.get_rect()
+        self.color = [255, 0, 0]
+        self.image.fill(self.color)
+        self.mask = pygame.mask.from_surface(self.image)
+
+    def update(self, *args):
+        """Update the position of the cursor."""
+        self.rect.center = pygame.mouse.get_pos()
+        self.image.fill(self.color)
 
 
 class WorldMap:
@@ -20,14 +42,13 @@ class WorldMap:
             debug: bool = False
     ):
         if background_color is None:
-            background_color = [127, 127, 127]
+            background_color = config.COLORS['bg']
         self._ASSETS_DIR = config.ASSETS_DIR / 'world_map'
         self.gm = game_manager
-        with open(self._ASSETS_DIR / 'country_coordinates.json', 'r') as f:
-            self.country_coordinates = json.load(f)
 
-        self.countries_surfaces = self._load_world_map()
-        self.scale = 1
+        self.world_surface = pygame.Surface([config.ROOT_SVG['width'], config.ROOT_SVG['height']])
+        self.countries = pygame.sprite.Group()
+        self.scale = 0.9
         self.background_color = background_color
 
         self._debug = debug
@@ -44,45 +65,60 @@ class WorldMap:
         """Set the visibility of the world map."""
         self._visible = value
 
-    def _load_world_map(self):
-        svgs = self._ASSETS_DIR.glob("countries_svgs/*.svg")
-        images = {}
-        for svg in svgs:
-            images[svg.stem.upper()] = pygame.image.load(str(svg)).convert_alpha()
-        return images
+    def load_map(self):
+        """Load the world map.
 
-    def blit_country(self, country: str, country_svg: pygame.Surface, scale: float = 1, debug: bool = False):
-        """Blit country on screen,
-
-        This seems to be a costly operation, hence use it only when needed
-        more discussion about how to make this more efficient must be done
+        Ideally, this should be called only once.
+        loads the svg file(s) and generates the countries sprites.
         """
-        topleft = [self.country_coordinates[country]['x'], self.country_coordinates[country]['y']]
-        size = [self.country_coordinates[country]['width'], self.country_coordinates[country]['height']]
-        country_svg = pygame.transform.scale(country_svg, [size[0] * scale, size[1] * scale])
-        country_svg.fill([0, 100, 200], special_flags=pygame.BLEND_MULT)
-        self.gm.screen.blit(
-            country_svg,
-            country_svg.get_rect(
-                topleft=topleft,
+        self.countries.add(*self._generate_countries_sprites())
+        self.visible = True
+
+    def _generate_countries_sprites(self) -> List[Country]:
+        """Generate the countries sprites.
+
+        Ideally, this should be called only once.
+        """
+        with open(self._ASSETS_DIR / 'country_coordinates.json', 'r') as f:
+            country_coordinates = json.load(f)
+        svgs = self._ASSETS_DIR.glob("countries_svgs/*.svg")
+        countries = []
+        for svg in svgs:
+            cid = svg.stem
+            country = Country(
+                country_coordinates[cid]['x'],
+                country_coordinates[cid]['y'],
+                [
+                    country_coordinates[cid]['width'],
+                    country_coordinates[cid]['height']
+                ],
+                svg,
             )
-        )
-        if debug:
-            pygame.draw.rect(self.gm.screen, [255, 0, 0], country_svg.get_rect(topleft=topleft), 1)
+            countries.append(country)
+        return countries
 
     def blit_world_map(self):
         """Blit the world map on screen."""
-        for country, country_surface in self.countries_surfaces.items():
-            self.blit_country(
-                country=country,
-                country_svg=country_surface,
-                scale=self.scale,
-                debug=self._debug
+        self.world_surface.fill(self.background_color)
+        sprite: Country
+        for sprite in self.countries:
+            sprite.draw_country_border(self.world_surface)
+        self.countries.draw(self.world_surface)  # todo: add a way to draw debug rects
+        surface_draw_size = [
+            dimension * self.scale
+            for dimension in self.world_surface.get_size()
+        ]
+        pygame.transform.scale(
+            self.world_surface,
+            surface_draw_size,
+        )
+        self.gm.screen.blit(
+            self.world_surface,
+            self.world_surface.get_rect(
+                center=self.gm.screen.get_rect().center
             )
-
-    def process_events(self, events):
-        """Process events for the world map."""
-        pass
+        )
+        self._map_drawn = True
 
     def draw(self):
         """Draws the world map."""
@@ -90,10 +126,15 @@ class WorldMap:
             # self.gm.screen.fill(self.background_color)
             self.blit_world_map()
 
-    def hide(self):
-        """Hides the world map."""
-        self.visible = False
+    # def xy_collide_with_country(self, country_id: str, pos: List[int, int]) -> bool:
+    #     """Check if the position collides with a country."""
+    #     country_surface = self.countries_surfaces[country_id]
 
-    def show(self):
-        """Shows the world map."""
-        self.visible = True
+    def process_events(self, events):
+        """Process events for the world map."""
+        if pygame.sprite.spritecollideany(self.gm.cursor, self.countries,) and (
+                country := pygame.sprite.spritecollideany(self.gm.cursor, self.countries, pygame.sprite.collide_mask)):
+            # only do mask collision if rect collision is true
+            draw_text(
+                country.name, self.gm.font, self.gm.screen
+            )

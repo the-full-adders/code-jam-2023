@@ -1,6 +1,8 @@
 from pathlib import Path
 from typing import List, TypedDict
 
+from .utils import helpers
+
 
 class RootSVG(TypedDict):
     """Type definition for the root svg"""
@@ -31,4 +33,5 @@ ROOT_SVG: RootSVG = {
 
 COLORS = {
     'bg': [1, 23, 27],
+    'fg': list(helpers.hex2rgb("#00394f"))
 }
