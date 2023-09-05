@@ -1,3 +1,4 @@
+import random
 from pathlib import Path
 
 import pycountry
@@ -28,6 +29,7 @@ class Country(Sprite):
 
         self.mask = pygame.mask.from_surface(self.image)
         self.mask_surface: pygame.Surface | None = None
+        self.connections = []
 
         self.border_color = [0, 0, 0]
 
@@ -42,7 +44,7 @@ class Country(Sprite):
             self.border_color = border_color
 
         self.mask_surface = self.mask.to_surface()
-        self.mask_surface.set_colorkey(self.border_color)
+        self.mask_surface.set_colorkey([0, 0, 0])
         dx, dy = [1, -1, 0, 0], [0, 0, 1, -1]
         for x, y in zip(dx, dy):
             pos = [
@@ -54,3 +56,13 @@ class Country(Sprite):
     def process_events(self, events):
         """Process events sent by pygame for the country."""
         pass
+
+    def get_random_point(self) -> list[int, int]:
+        """Get a random position inside the country."""
+        if not self.connections:
+            x, y = (random.randint(0, self.mask_surface.get_rect().width),
+                    random.randint(0, self.mask_surface.get_rect().height))
+            while not self.mask_surface.get_at([x, y]):
+                x, y = (random.randint(0, self.rect.width), random.randint(0, self.rect.height))
+            self.connections.append([self.rect.x + x, self.rect.y + y])
+        return self.connections[0]

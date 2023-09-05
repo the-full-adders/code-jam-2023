@@ -37,6 +37,7 @@ lxml = "^4.9.3"
 
 [tool.poetry.group.extra.dependencies]
 pycountry = "^22.3.5"
+pyopengl = "^3.1.7"
 
 [tool.poetry.scripts]
 game = "game.__main__:run_game"

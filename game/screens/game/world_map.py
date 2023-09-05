@@ -1,5 +1,5 @@
 import json
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, Dict, List
 
 import pygame
 
@@ -48,6 +48,7 @@ class WorldMap:
 
         self.world_surface = pygame.Surface([config.ROOT_SVG['width'], config.ROOT_SVG['height']])
         self.countries = pygame.sprite.Group()
+        self.countries_sprites: Dict[str, Country] = {}
         self.scale = 0.9
         self.background_color = background_color
 
@@ -96,6 +97,7 @@ class WorldMap:
                 svg,
             )
             countries.append(country)
+            self.countries_sprites[cid] = country
         return countries
 
     def blit_world_map(self):
