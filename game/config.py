@@ -35,3 +35,16 @@ COLORS = {
     'bg': [1, 23, 27],
     'fg': list(helpers.hex2rgb("#00394f"))
 }
+# Color Palette
+# colors = [
+#     ("Midnight Blue", [0, 57, 79]),
+#     ("Deep Sea Blue", [0, 122, 150]),
+#     ("Turquoise Blue", [54, 153, 173]),
+#     ("Aquamarine", [124, 203, 214]),
+#     ("Pale Green", [242, 255, 230]),
+#     ("Light Yellow", [245, 233, 174]),
+#     ("Olive Green", [207, 209, 121]),
+#     ("Lime Green", [158, 186, 89]),
+#     ("Forest Green", [102, 150, 63]),
+#     ("Moss Green", [71, 102, 61])
+# ]
