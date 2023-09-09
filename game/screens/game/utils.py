@@ -1,6 +1,8 @@
 import math
-from countries import Country
+
 import pygame as pg
+from countries import Country
+
 
 def pos2angle(A, B, aspectRatio):
     """Calculate the angle between two points."""
@@ -12,7 +14,7 @@ def pos2angle(A, B, aspectRatio):
 
 def draw_arcs(countries: tuple[Country, Country], curve_height: int, num_segments: int, color: tuple[int, int, int],
               screen: pg.Surface):
-
+    """Draw arcs between two countries."""
     countries_points: list[list[int, int], list[int, int]] = []
     for country in countries:
         countries_points.append(country.get_random_point())
